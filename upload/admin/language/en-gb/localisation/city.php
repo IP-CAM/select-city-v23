@@ -4,6 +4,7 @@ $_['heading_title']		= 'City';
 
 // Text
 $_['text_success']		= 'Success: You have modified cities!';
+$_['text_list']         = 'City List';
 
 // Column
 $_['column_name']		= 'City Name';
@@ -20,4 +21,3 @@ $_['entry_status']		= 'Status:';
 // Error
 $_['error_permission']	= 'Warning: You do not have permission to modify cities!';
 $_['error_name']		= 'City Name must be between 3 and 128 characters!';
-?>
