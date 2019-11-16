@@ -272,6 +272,7 @@ class ControllerLocalisationCity extends Controller {
 		$data['text_enabled'] = $this->language->get('text_enabled');
 		$data['text_disabled'] = $this->language->get('text_disabled');
 		$data['text_none'] = $this->language->get('text_none');
+		$data['text_select'] = $this->language->get('text_select');
 
 		$data['entry_name'] = $this->language->get('entry_name');
 		$data['entry_country'] = $this->language->get('entry_country');
