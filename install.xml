@@ -1,1 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<modification>
+   <name>Select City</name>
+   <code>select_city</code>
+   <version>1.0</version>
+   <link>https://www.free-time-info.com</link>
+   <author>xxvirusxx</author>
 
+	<file path="admin/controller/common/column_left.php">
+		<operation info="Display Cities in Column Left">
+			<search><![CDATA[if ($this->user->hasPermission('access', 'localisation/geo_zone')) {]]></search>
+			<add position="before"><![CDATA[
+			if ($this->user->hasPermission('access', 'localisation/city')) {
+				$localisation[] = array(
+					'name'	   => $this->language->get('text_city'),
+					'href'     => $this->url->link('localisation/city', 'token=' . $this->session->data['token'], true),
+					'children' => array()		
+				);
+			}
+			]]></add>
+		</operation>
+	</file>
+
+	<file path="admin/language/en-gb/common/column_left.php">
+		<operation info="Add language variable">
+			<search><![CDATA[$_['text_zone']]]></search>
+			<add position="before"><![CDATA[
+$_['text_city']                      = 'Cities';
+			]]></add>
+		</operation>
+	</file>
+
+	<file path="admin/controller/localisation/country.php">
+		<operation info="Zone code for Ajax response">
+			<search><![CDATA[$this->response->setOutput(json_encode($json));]]></search>
+			<add position="after" offset="1"><![CDATA[
+	public function zone() {
+		$json = array();
+
+		$this->load->model('localisation/zone');
+
+		$zone_info = $this->model_localisation_zone->getZone($this->request->get['zone_id']);
+
+		if ($zone_info) {
+			$this->load->model('localisation/city');
+
+			$json = array(
+				'zone_id'   => $zone_info['zone_id'],
+				'name'      => $zone_info['name'],
+				'city'      => $this->model_localisation_city->getCitiesByZoneId($this->request->get['zone_id']),
+				'status'    => $zone_info['status']
+			);
+		}
+
+		$this->response->setOutput(json_encode($json));
+	}
+			]]></add>
+		</operation>
+	</file>
+</modification>
