@@ -57,4 +57,102 @@ $_['text_city']                      = 'Cities';
 			]]></add>
 		</operation>
 	</file>
+
+	<file path="admin/view/template/customer/customer_form.tpl">
+		<operation>
+			<search><![CDATA[<input type="text" name="address[<?php echo $address_row; ?>][address_2]" value="<?php echo $address['address_2']; ?>" placeholder="<?php echo $entry_address_2; ?>" id="input-address-2<?php echo $address_row; ?>" class="form-control" />]]></search>
+			<add position="replace" offset="11"><![CDATA[
+                          <input type="text" name="address[<?php echo $address_row; ?>][address_2]" value="<?php echo $address['address_2']; ?>" placeholder="<?php echo $entry_address_2; ?>" id="input-address-2<?php echo $address_row; ?>" class="form-control" />
+                        </div>
+                      </div>
+			]]></add>
+		</operation>
+		<operation>
+			<search><![CDATA[<select name="address[<?php echo $address_row; ?>][zone_id]" id="input-zone<?php echo $address_row; ?>" class="form-control">]]></search>
+			<add position="replace"><![CDATA[
+                          <select name="address[<?php echo $address_row; ?>][zone_id]" id="input-zone<?php echo $address_row; ?>" onchange="zone(this, '<?php echo $address_row; ?>', '<?php echo $address['city']; ?>');" class="form-control">
+			]]></add>
+		</operation>
+		<operation>
+			<search index="1"><![CDATA[<?php foreach ($custom_fields as $custom_field) { ?>]]></search>
+			<add position="before"><![CDATA[
+                      <div class="form-group required">
+                        <label class="col-sm-2 control-label" for="input-city<?php echo $address_row; ?>"><?php echo $entry_city; ?></label>
+                        <div class="col-sm-10">
+                          <select name="address[<?php echo $address_row; ?>][city]" id="input-city<?php echo $address_row; ?>" class="form-control">
+                          </select>
+                          <?php if (isset($error_address[$address_row]['city'])) { ?>
+                          <div class="text-danger"><?php echo $error_address[$address_row]['city']; ?></div>
+                          <?php } ?>
+                        </div>
+                      </div>
+			]]></add>
+		</operation>
+		<operation>
+			<search><![CDATA[html += '    <div class="col-sm-10"><input type="text" name="address[' + address_row + '][address_2]" value="" placeholder="<?php echo $entry_address_2; ?>" id="input-address-2' + address_row + '" class="form-control" /></div>';]]></search>
+			<add position="replace" offset="6"><![CDATA[
+	html += '    <div class="col-sm-10"><input type="text" name="address[' + address_row + '][address_2]" value="" placeholder="<?php echo $entry_address_2; ?>" id="input-address-2' + address_row + '" class="form-control" /></div>';
+	html += '  </div>';
+			]]></add>
+		</operation>
+		<operation>
+			<search><![CDATA[html += '    <div class="col-sm-10"><select name="address[' + address_row + '][zone_id]" id="input-zone' + address_row + '" class="form-control"><option value=""><?php echo $text_none; ?></option></select></div>';]]></search>
+			<add position="replace"><![CDATA[html += '      <div class="col-sm-10"><select name="address[' + address_row + '][zone_id]" id="input-zone' + address_row + '" onchange="zone(this, \'' + address_row + '\', \'0\');" class="form-control"><option value="false"><?php echo $text_none; ?></option></select></div>';]]></add>
+		</operation>
+		<operation>
+			<search><![CDATA[// Custom Fields]]></search>
+			<add position="before"><![CDATA[
+    html += '  <div class="form-group required">';
+	html += '    <label class="col-sm-2 control-label" for="input-city' + address_row + '"><?php echo $entry_city; ?></label>';
+    html += '      <div class="col-sm-10"><select name="address[' + address_row + '][city]" id="input-city' + address_row + '" class="form-control"><option value="false"><?php echo $text_none; ?></option></select></div>';
+	html += '  </div>';
+			]]></add>
+		</operation>
+		<operation>
+			<search><![CDATA[$('select[name=\'address[' + index + '][zone_id]\']').html(html);]]></search>
+			<add position="after"><![CDATA[
+			$('select[name$=\'[zone_id]\']').trigger('change');
+			]]></add>
+		</operation>
+		<operation>
+			<search><![CDATA[$('select[name$=\'[country_id]\']').trigger('change');]]></search>
+			<add position="after" offset="1"><![CDATA[
+<script type="text/javascript"><!--
+function zone(element, index, city) {
+  if (element.value != '') {
+        $.ajax({
+            url: 'index.php?route=localisation/country/zone&token=<?php echo $token; ?>&zone_id=' + element.value,
+            dataType: 'json',
+            beforeSend: function() {
+                $('select[name=\'address[' + index + '][zone_id]\']').after(' <i class="fa fa-circle-o-notch fa-spin"></i>');
+            },
+            complete: function() {
+                $('.fa-spin').remove();
+            },
+            success: function(json) {
+                html = '<option value=""><?php echo $text_select; ?></option>';
+                if (json['city'] != '') {
+                    for (i = 0; i < json['city'].length; i++) {
+                        html += '<option value="' + json['city'][i]['name'] + '"';
+                        if (json['city'][i]['name'] == city) {
+                            html += ' selected="selected"';
+                        }
+                        html += '>' + json['city'][i]['name'] + '</option>';
+                    }
+                } else {
+                    html += '<option value="0"><?php echo $text_none; ?></option>';
+                }
+                $('select[name=\'address[' + index + '][city]\']').html(html);
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+                alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+            }
+        });
+    }
+}
+$('select[name$=\'[zone_id]\']').trigger('change');
+//--></script>
+			]]></add>
+		</operation>
+	</file>
 </modification>
