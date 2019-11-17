@@ -155,4 +155,79 @@ $('select[name$=\'[zone_id]\']').trigger('change');
 			]]></add>
 		</operation>
 	</file>
+
+	<file path="admin/view/template/marketing/affiliate_form.tpl">
+		<operation>
+			<search><![CDATA[<input type="text" name="address_2" value="<?php echo $address_2; ?>" placeholder="<?php echo $entry_address_2; ?>" id="input-address-2" class="form-control" />]]></search>
+			<add position="replace" offset="11"><![CDATA[
+                    <input type="text" name="address_2" value="<?php echo $address_2; ?>" placeholder="<?php echo $entry_address_2; ?>" id="input-address-2" class="form-control" />
+                  </div>
+                </div>
+			]]></add>
+		</operation>
+		<operation>
+			<search><![CDATA[<div class="text-danger"><?php echo $error_zone; ?></div>]]></search>
+			<add position="after" offset="3"><![CDATA[
+                <div class="form-group required">
+                  <label class="col-sm-2 control-label" for="input-city"><?php echo $entry_city; ?></label>
+                  <div class="col-sm-10">
+                    <select name="city" id="input-city" class="form-control">
+                    </select>
+                    <?php if ($error_city) { ?>
+                    <div class="text-danger"><?php echo $error_city; ?></div>
+                    <?php } ?>
+                  </div>
+                </div>
+			]]></add>
+		</operation>
+		<operation>
+			<search><![CDATA[$('select[name=\'zone_id\']').html(html);]]></search>
+			<add position="after"><![CDATA[
+            $('select[name=\'zone_id\']').trigger('change');
+			]]></add>
+		</operation>
+		<operation>
+			<search><![CDATA[$('select[name=\'country_id\']').trigger('change');]]></search>
+			<add position="after" offset="1"><![CDATA[
+<script type="text/javascript"><!--
+$('select[name=\'zone_id\']').on('change', function() {
+    $.ajax({
+        url: 'index.php?route=localisation/country/zone&token=<?php echo $token; ?>&zone_id=' + this.value,
+        dataType: 'json',
+        beforeSend: function() {
+            $('select[name=\'zone_id\']').after(' <i class="fa fa-circle-o-notch fa-spin"></i>');
+        },
+        complete: function() {
+            $('.fa-spin').remove();
+        },
+        success: function(json) {
+            html = '<option value=""><?php echo $text_select; ?></option>';
+
+            if (json != '' && json['city'] != '') {
+                for (i = 0; i < json['city'].length; i++) {
+                    html += '<option value="' + json['city'][i]['name'] + '"';
+
+                    if (json['city'][i]['name'] == '<?php echo $city; ?>') {
+                        html += ' selected="selected"';
+                    }
+
+                    html += '>' + json['city'][i]['name'] + '</option>';
+                }
+            } else {
+                html += '<option value="0" selected="selected"><?php echo $text_none; ?></option>';
+            }
+
+            $('select[name=\'city\']').html(html);
+        },
+        error: function(xhr, ajaxOptions, thrownError) {
+            alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+        }
+    });
+});
+
+$('select[name=\'zone_id\']').trigger('change');
+//--></script>
+			]]></add>
+		</operation>
+	</file>
 </modification>
