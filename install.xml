@@ -120,7 +120,6 @@ $_['text_city']                      = 'Cities';
 			<add position="after" offset="1"><![CDATA[
 <script type="text/javascript"><!--
 function zone(element, index, city) {
-  if (element.value != '') {
         $.ajax({
             url: 'index.php?route=localisation/country/zone&token=<?php echo $token; ?>&zone_id=' + element.value,
             dataType: 'json',
@@ -132,30 +131,40 @@ function zone(element, index, city) {
             },
             success: function(json) {
                 html = '<option value=""><?php echo $text_select; ?></option>';
-                if (json['city'] != '') {
+
+                if (json['city'] && json['city'] != '') {
                     for (i = 0; i < json['city'].length; i++) {
                         html += '<option value="' + json['city'][i]['name'] + '"';
                         if (json['city'][i]['name'] == city) {
                             html += ' selected="selected"';
                         }
+
                         html += '>' + json['city'][i]['name'] + '</option>';
                     }
                 } else {
                     html += '<option value="0"><?php echo $text_none; ?></option>';
                 }
+
                 $('select[name=\'address[' + index + '][city]\']').html(html);
             },
             error: function(xhr, ajaxOptions, thrownError) {
                 alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
             }
         });
-    }
 }
 $('select[name$=\'[zone_id]\']').trigger('change');
 //--></script>
 			]]></add>
 		</operation>
 	</file>
+
+	<file path="admin/language/en-gb/customer/customer.php">
+		<operation>
+			<search><![CDATA[City must be between 2 and 128 characters!]]></search>
+			<add position="replace"><![CDATA[Please select a city!]]></add>
+		</operation>
+	</file>
+
 
 	<file path="admin/view/template/marketing/affiliate_form.tpl">
 		<operation>
@@ -204,7 +213,7 @@ $('select[name=\'zone_id\']').on('change', function() {
         success: function(json) {
             html = '<option value=""><?php echo $text_select; ?></option>';
 
-            if (json != '' && json['city'] != '') {
+            if (json['city'] && json['city'] != '') {
                 for (i = 0; i < json['city'].length; i++) {
                     html += '<option value="' + json['city'][i]['name'] + '"';
 
@@ -229,6 +238,13 @@ $('select[name=\'zone_id\']').on('change', function() {
 $('select[name=\'zone_id\']').trigger('change');
 //--></script>
 			]]></add>
+		</operation>
+	</file>
+
+	<file path="admin/language/en-gb/marketing/affiliate.php">
+		<operation>
+			<search><![CDATA[City must be between 2 and 128 characters!]]></search>
+			<add position="replace"><![CDATA[Please select a city!]]></add>
 		</operation>
 	</file>
 
@@ -297,7 +313,7 @@ $('#tab-payment select[name=\'zone_id\']').on('change', function() {
         success: function(json) {
             html = '<option value=""><?php echo $text_select; ?></option>';
 
-            if (json != '' && json['city'] != '') {
+            if (json['city'] && json['city'] != '') {
                 for (i = 0; i < json['city'].length; i++) {
                     html += '<option value="' + json['city'][i]['name'] + '"';
 
@@ -362,7 +378,7 @@ $('#tab-shipping select[name=\'zone_id\']').on('change', function() {
         success: function(json) {
             html = '<option value=""><?php echo $text_select; ?></option>';
 
-            if (json != '' && json['city'] != '') {
+            if (json['city'] && json['city'] != '') {
                 for (i = 0; i < json['city'].length; i++) {
                     html += '<option value="' + json['city'][i]['name'] + '"';
 
@@ -504,7 +520,7 @@ $('select[name=\'zone_id\']').on('change', function() {
         success: function(json) {
             html = '<option value=""><?php echo $text_select; ?></option>';
 
-            if (json['city'] != '') {
+            if (json['city'] && json['city'] != '') {
                 for (i = 0; i < json['city'].length; i++) {
                     html += '<option value="' + json['city'][i]['name'] + '"';
 
@@ -567,7 +583,6 @@ $('select[name=\'zone_id\']').trigger('change');
 			<add position="before"><![CDATA[
 <script type="text/javascript"><!--
 $('select[name=\'zone_id\']').on('change', function() {
-    if (this.value == '') return;
     $.ajax({
         url: 'index.php?route=account/account/zone&zone_id=' + this.value,
         dataType: 'json',
@@ -580,7 +595,7 @@ $('select[name=\'zone_id\']').on('change', function() {
         success: function(json) {
             html = '<option value=""><?php echo $text_select; ?></option>';
 
-            if (json['city'] != '') {
+            if (json['city'] && json['city'] != '') {
                 for (i = 0; i < json['city'].length; i++) {
                     html += '<option value="' + json['city'][i]['name'] + '"';
 
@@ -728,7 +743,6 @@ $('select[name=\'zone_id\']').trigger('change');
 			<add position="after" offset="1"><![CDATA[
 <script type="text/javascript"><!--
 $('#collapse-payment-address select[name=\'zone_id\']').on('change', function() {
-    if (this.value == '') return;
     $.ajax({
         url: 'index.php?route=checkout/checkout/zone&zone_id=' + this.value,
         dataType: 'json',
@@ -741,7 +755,7 @@ $('#collapse-payment-address select[name=\'zone_id\']').on('change', function() 
         success: function(json) {
             html = '<option value=""><?php echo $text_select; ?></option>';
 
-            if (json['city'] != '') {
+            if (json['city'] && json['city'] != '') {
                 for (i = 0; i < json['city'].length; i++) {
                     html += '<option value="' + json['city'][i]['name'] + '"';
 
@@ -804,7 +818,6 @@ $('#collapse-payment-address select[name=\'zone_id\']').trigger('change');
 			<add position="after" offset="1"><![CDATA[
 <script type="text/javascript"><!--
 $('$('#collapse-shipping-address select[name=\'zone_id\']').on('change', function() {
-    if (this.value == '') return;
     $.ajax({
         url: 'index.php?route=checkout/checkout/zone&zone_id=' + this.value,
         dataType: 'json',
@@ -817,7 +830,7 @@ $('$('#collapse-shipping-address select[name=\'zone_id\']').on('change', functio
         success: function(json) {
             html = '<option value=""><?php echo $text_select; ?></option>';
 
-            if (json['city'] != '') {
+            if (json['city'] && json['city'] != '') {
                 for (i = 0; i < json['city'].length; i++) {
                     html += '<option value="' + json['city'][i]['name'] + '"';
 
